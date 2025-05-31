@@ -20,6 +20,29 @@ export class ImageProvider {
     }
 
     getAllImages() {
-        return this.collection.find().toArray(); // Without any options, will by default get all documents in the collection as an array.
+        return this.collection.find().toArray();
+    }
+
+    searchImagesByName(searchQuery: string) {
+        return this.collection.find({
+            name: { $regex: searchQuery, $options: 'i' }
+        }).toArray();
+    }
+
+    getImages(nameFilter?: string) {
+        if (nameFilter) {
+            return this.collection.find({
+                name: { $regex: nameFilter, $options: 'i' }
+            }).toArray();
+        }
+        return this.collection.find().toArray();
+    }
+
+    async updateImageName(imageId: string, newName: string): Promise<number> {
+        const result = await this.collection.updateOne(
+            { id: imageId },
+            { $set: { name: newName } }
+        );
+        return result.matchedCount;
     }
 }

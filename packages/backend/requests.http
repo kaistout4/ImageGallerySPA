@@ -1,0 +1,72 @@
+### Get all images
+# This is a comment
+GET http://localhost:3000/api/images
+
+### Search images by name
+GET http://localhost:3000/api/images/search?q=shiba
+
+### Search images by name
+GET http://localhost:3000/api/images/search?q=blue
+
+### Update image name
+PUT http://localhost:3000/api/images/0
+Content-Type: application/json
+
+{
+  "name": "Updated Blue Merle Dog"
+}
+
+### Update another image name
+PUT http://localhost:3000/api/images/1
+Content-Type: application/json
+
+{
+  "name": "Beautiful Siberian Huskies"
+}
+
+### Test 400 Bad Request - Missing name field
+PUT http://localhost:3000/api/images/0
+Content-Type: application/json
+
+{
+  "title": "This should fail"
+}
+
+### Test 400 Bad Request - Name is not a string
+PUT http://localhost:3000/api/images/0
+Content-Type: application/json
+
+{
+  "name": 12345
+}
+
+### Test 404 Not Found - Invalid ObjectId format
+PUT http://localhost:3000/api/images/invalid-id
+Content-Type: application/json
+
+{
+  "name": "This should fail"
+}
+
+### Test 404 Not Found - Valid ObjectId but image doesn't exist
+PUT http://localhost:3000/api/images/507f1f77bcf86cd799439011
+Content-Type: application/json
+
+{
+  "name": "This should fail"
+}
+
+### Test 422 Unprocessable Entity - Name too long (over 100 characters)
+PUT http://localhost:3000/api/images/0
+Content-Type: application/json
+
+{
+  "name": "This is an extremely long image name that exceeds the maximum allowed length of 100 characters and should trigger a 422 Unprocessable Entity error response from the server"
+}
+
+### A second example.  Each request must be delimited by a triple hash
+POST http://localhost:3000/api/test
+Content-Type: application/json # Content-Type header is a must if you're sending JSON
+# Request body separated from headers by newline
+
+{ "a": 1, "b": 2 }

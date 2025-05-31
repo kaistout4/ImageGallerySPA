@@ -1,3 +1,4 @@
+
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -5,7 +6,7 @@ import { ValidRoutes } from "./shared/ValidRoutes";
 import { connectMongo } from "./connectMongo";
 import { ImageProvider } from "./ImageProvider";
 import { UserProvider } from "./UserProvider";
-import { IApiImageData } from "./common/ApiImageData";
+import { registerImageRoutes } from "./routes/imageRoutes";
 
 dotenv.config(); // Read the .env file in the current working directory, and load values into process.env.
 const PORT = process.env.PORT || 3000;
@@ -19,46 +20,19 @@ mongoClient.connect().then(async () => {
     const collections = await mongoClient.db().listCollections().toArray();
     imageProvider = new ImageProvider(mongoClient);
     userProvider = new UserProvider(mongoClient);
+    
+    registerImageRoutes(app, imageProvider, userProvider);
 }).catch(error => {
     console.error("Failed to connect to MongoDB:", error);
 });
 
 const app = express();
 
+app.use(express.json());  // for parsing application/json
 app.use(express.static(STATIC_DIR));
-
-function waitDuration(numMs: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, numMs));
-}
 
 app.get("/api/hello", (req: Request, res: Response) => {
     res.send("Hello, World");
-});
-
-app.get("/api/images", async (req: Request, res: Response) => {
-    await waitDuration(1000);
-    
-    try {
-        const images = await imageProvider.getAllImages();
-
-        const authorIds = [...new Set(images.map(img => img.author))];
-        
-        const users = await userProvider.getUsersByIds(authorIds);
-        
-        const userMap = new Map(users.map(user => [user.id, user]));
-        
-        const apiImages: IApiImageData[] = images.map(image => ({
-            id: image.id,
-            src: image.src,
-            name: image.name,
-            author: userMap.get(image.author) || { id: image.author, username: "Unknown User" }
-        }));
-        
-        res.json(apiImages);
-    } catch (error) {
-        console.error("Error fetching images:", error);
-        res.status(500).json({ error: "Failed to fetch images" });
-    }
 });
 
 Object.values(ValidRoutes).forEach(route => {
