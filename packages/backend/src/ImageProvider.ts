@@ -1,4 +1,4 @@
-import { MongoClient, Collection } from "mongodb";
+import { MongoClient, Collection, ObjectId } from "mongodb";
 import { IApiImageData, IApiUserData } from "./common/ApiImageData";
 
 interface IImageDocument {
@@ -40,7 +40,7 @@ export class ImageProvider {
 
     async updateImageName(imageId: string, newName: string): Promise<number> {
         const result = await this.collection.updateOne(
-            { id: imageId },
+            { _id: new ObjectId(imageId) },
             { $set: { name: newName } }
         );
         return result.matchedCount;

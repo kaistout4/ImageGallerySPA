@@ -30,7 +30,7 @@ export function registerImageRoutes(
             const userMap = new Map(users.map(user => [user.id, user]));
             
             const apiImages: IApiImageData[] = images.map((image: any) => ({
-                id: image.id,
+                id: image._id.toString(),
                 src: image.src,
                 name: image.name,
                 author: userMap.get(image.author) || { id: image.author, username: "Unknown User" }
