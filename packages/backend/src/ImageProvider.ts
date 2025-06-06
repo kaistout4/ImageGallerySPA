@@ -2,7 +2,7 @@ import { MongoClient, Collection, ObjectId } from "mongodb";
 import { IApiImageData, IApiUserData } from "./common/ApiImageData";
 
 interface IImageDocument {
-    id: string;
+    _id?: ObjectId;
     src: string;
     name: string;
     author: string;

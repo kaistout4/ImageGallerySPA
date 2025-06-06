@@ -65,7 +65,7 @@ export function registerImageRoutes(
             const userMap = new Map(users.map(user => [user.id, user]));
             
             const apiImages: IApiImageData[] = images.map((image: any) => ({
-                id: image.id,
+                id: image._id.toString(),
                 src: image.src,
                 name: image.name,
                 author: userMap.get(image.author) || { id: image.author, username: "Unknown User" }
@@ -109,6 +109,7 @@ export function registerImageRoutes(
         try {
             const matchedCount = await imageProvider.updateImageName(imageId, newName);
             
+            console.log('Matched count: %d', matchedCount)
             if (matchedCount === 0) {
                 res.status(404).send({
                     error: "Not Found",

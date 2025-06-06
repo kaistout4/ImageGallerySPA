@@ -9,7 +9,7 @@ GET http://localhost:3000/api/images/search?q=shiba
 GET http://localhost:3000/api/images/search?q=blue
 
 ### Update image name
-PUT http://localhost:3000/api/images/0
+PUT http://localhost:3000/api/images/683a93e0e00419049230c968
 Content-Type: application/json
 
 {
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### Update another image name
-PUT http://localhost:3000/api/images/1
+PUT http://localhost:3000/api/images/683a93e0e00419049230c969
 Content-Type: application/json
 
 {
@@ -25,7 +25,7 @@ Content-Type: application/json
 }
 
 ### Test 400 Bad Request - Missing name field
-PUT http://localhost:3000/api/images/0
+PUT http://localhost:3000/api/images/507f1f77bcf86cd799439011
 Content-Type: application/json
 
 {
@@ -33,7 +33,7 @@ Content-Type: application/json
 }
 
 ### Test 400 Bad Request - Name is not a string
-PUT http://localhost:3000/api/images/0
+PUT http://localhost:3000/api/images/507f1f77bcf86cd799439011
 Content-Type: application/json
 
 {
@@ -57,7 +57,7 @@ Content-Type: application/json
 }
 
 ### Test 422 Unprocessable Entity - Name too long (over 100 characters)
-PUT http://localhost:3000/api/images/0
+PUT http://localhost:3000/api/images/507f1f77bcf86cd799439011
 Content-Type: application/json
 
 {
