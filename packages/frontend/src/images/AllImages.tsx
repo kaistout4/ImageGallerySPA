@@ -5,9 +5,10 @@ interface IAllImagesProps {
     imageData: IApiImageData[];
     isLoading: boolean;
     hasError: boolean;
+    searchPanel?: React.ReactNode;
 }
 
-export function AllImages({ imageData, isLoading, hasError }: IAllImagesProps) {
+export function AllImages({ imageData, isLoading, hasError, searchPanel }: IAllImagesProps) {
     if (isLoading) {
         return (
             <>
@@ -29,6 +30,7 @@ export function AllImages({ imageData, isLoading, hasError }: IAllImagesProps) {
     return (
         <>
             <h2>All Images</h2>
+            {searchPanel}
             <ImageGrid images={imageData} />
         </>
     );
