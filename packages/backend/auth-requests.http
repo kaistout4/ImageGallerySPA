@@ -70,30 +70,14 @@ Content-Type: application/json
 
 {}
 
-###############################################
-# OWNERSHIP TEST CASES
-###############################################
-
-### Register user "chunkylover23" (owner of image 683a93e0e00419049230c968)
+### Register user "chunkylover23"
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 { "username": "chunkylover23", "password": "password" }
 
-### Login as "chunkylover23" to get token
+### Login as "chunkylover23"
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 { "username": "chunkylover23", "password": "password" }
-
-### Register user "fluffycoat" (to test forbidden access)
-POST http://localhost:3000/auth/register
-Content-Type: application/json
-
-{ "username": "fluffycoat", "password": "password" }
-
-### Login as "fluffycoat" to get token
-POST http://localhost:3000/auth/login
-Content-Type: application/json
-
-{ "username": "fluffycoat", "password": "password" }
