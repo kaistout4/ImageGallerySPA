@@ -5,7 +5,7 @@ interface IImageDocument {
     _id?: ObjectId;
     src: string;
     name: string;
-    author: string;
+    authorId: string;
 }
 
 export class ImageProvider {
@@ -36,6 +36,10 @@ export class ImageProvider {
             }).toArray();
         }
         return this.collection.find().toArray();
+    }
+
+    async getImageById(imageId: string): Promise<IImageDocument | null> {
+        return await this.collection.findOne({ _id: new ObjectId(imageId) });
     }
 
     async updateImageName(imageId: string, newName: string): Promise<number> {

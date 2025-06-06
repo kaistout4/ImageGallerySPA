@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { ImageProvider } from "../ImageProvider";
 import { UserProvider } from "../UserProvider";
 import { IApiImageData } from "../common/ApiImageData";
+import "../middleware/authMiddleware";
 
 const MAX_NAME_LENGTH = 100;
 
@@ -23,7 +24,7 @@ export function registerImageRoutes(
             
             const images = await imageProvider.getImages(searchQuery);
 
-            const authorIds = [...new Set(images.map(img => img.author))];
+            const authorIds = [...new Set(images.map(img => img.authorId))];
             
             const users = await userProvider.getUsersByIds(authorIds);
             
@@ -33,7 +34,7 @@ export function registerImageRoutes(
                 id: image._id.toString(),
                 src: image.src,
                 name: image.name,
-                author: userMap.get(image.author) || { id: image.author, username: "Unknown User" }
+                author: userMap.get(image.authorId) || { id: image.authorId, username: "Unknown User" }
             }));
             
             res.json(apiImages);
@@ -58,7 +59,7 @@ export function registerImageRoutes(
         try {
             const images = await imageProvider.getImages(searchQuery);
             
-            const authorIds = [...new Set(images.map(img => img.author))];
+            const authorIds = [...new Set(images.map(img => img.authorId))];
             
             const users = await userProvider.getUsersByIds(authorIds);
             
@@ -107,9 +108,30 @@ export function registerImageRoutes(
         }
 
         try {
+            const image = await imageProvider.getImageById(imageId);
+            
+            if (!image) {
+                res.status(404).send({
+                    error: "Not Found",
+                    message: "Image does not exist"
+                });
+                return;
+            }
+            
+            const loggedInUsername = req.user?.username;
+            
+            console.log("Image authorId: ", image.authorId);
+            console.log("Logged in user: ", loggedInUsername);
+            if (!loggedInUsername || image.authorId !== loggedInUsername) {
+                res.status(403).send({
+                    error: "Forbidden",
+                    message: "You can only edit images you own"
+                });
+                return;
+            }
+            
             const matchedCount = await imageProvider.updateImageName(imageId, newName);
             
-            console.log('Matched count: %d', matchedCount)
             if (matchedCount === 0) {
                 res.status(404).send({
                     error: "Not Found",

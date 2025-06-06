@@ -77,6 +77,33 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc
   "name": "This is an extremely long image name that exceeds the maximum allowed length of 100 characters and should trigger a 422 Unprocessable Entity error response from the server"
 }
 
+### Update image w/o Auth (should fail - 401)
+PUT http://localhost:3000/api/images/683a93e0e00419049230c968
+Content-Type: application/json
+
+{
+  "name": "Trying to update without authentication"
+}
+
+### Update image as owner "chunkylover23" (should succeed - 204)
+# Replace with chunkylover23's token
+PUT http://localhost:3000/api/images/683a93e0e00419049230c968
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNodW5reWxvdmVyMjMiLCJpYXQiOjE3NDkyNTI0MzEsImV4cCI6MTc0OTMzODgzMX0.lhIOHtIWfoTQTii_SDrKnu-rr91-kT-F-bc1D0tPPcM
+
+{
+  "name": "Updated by owner chunkylover23"
+}
+
+### Update "fluffycoat" image as "chunkylover23" (should fail - 403)
+PUT http://localhost:3000/api/images/683a93e0e00419049230c96c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNodW5reWxvdmVyMjMiLCJpYXQiOjE3NDkyNTI0MzEsImV4cCI6MTc0OTMzODgzMX0.lhIOHtIWfoTQTii_SDrKnu-rr91-kT-F-bc1D0tPPcM
+
+{
+  "name": "Trying to update fluffycoat image"
+}
+
 ### A second example.  Each request must be delimited by a triple hash
 POST http://localhost:3000/api/test
 Content-Type: application/json # Content-Type header is a must if you're sending JSON
