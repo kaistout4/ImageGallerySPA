@@ -126,7 +126,7 @@ function App() {
                 } />
                 <Route path={ValidRoutes.UPLOAD.substring(1)} element={
                     <ProtectedRoute authToken={authToken}>
-                        <UploadPage />
+                        <UploadPage authToken={authToken} />
                     </ProtectedRoute>
                 } />
                 <Route path={ValidRoutes.LOGIN.substring(1)} element={<LoginPage onAuthSuccess={handleAuthSuccess} />} />

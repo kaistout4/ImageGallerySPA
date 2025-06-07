@@ -4,6 +4,7 @@ import { ImageProvider } from "../ImageProvider";
 import { UserProvider } from "../UserProvider";
 import { IApiImageData } from "../common/ApiImageData";
 import "../middleware/authMiddleware";
+import { imageMiddlewareFactory, handleImageFileErrors } from "../middleware/imageUploadMiddleware";
 
 const MAX_NAME_LENGTH = 100;
 
@@ -146,4 +147,14 @@ export function registerImageRoutes(
             res.status(500).json({ error: "Failed to update image name" });
         }
     });
+
+    app.post(
+        "/api/images",
+        imageMiddlewareFactory.single("image"),
+        handleImageFileErrors,
+        async (req: Request, res: Response) => {
+            // Final handler function after the above two middleware functions finish running
+            res.status(500).send("Not implemented");
+        }
+    );
 }
