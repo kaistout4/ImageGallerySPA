@@ -21,21 +21,17 @@ export function registerImageRoutes(
         await waitDuration(1000);
         
         try {
-            const searchQuery = req.query.search as string;
-            
-            const images = await imageProvider.getImages(searchQuery);
-
-            const authorIds = [...new Set(images.map(img => img.authorId))];
-            
-            const users = await userProvider.getUsersByIds(authorIds);
-            
-            const userMap = new Map(users.map(user => [user.id, user]));
+            const images = await imageProvider.getAllImages();
             
             const apiImages: IApiImageData[] = images.map((image: any) => ({
                 id: image._id.toString(),
                 src: image.src,
                 name: image.name,
-                author: userMap.get(image.authorId) || { id: image.authorId, username: "Unknown User" }
+                author: { 
+                    id: image.authorId, 
+                    username: image.authorId,
+                    email: `${image.authorId}@example.com`
+                }
             }));
             
             res.json(apiImages);
@@ -60,17 +56,15 @@ export function registerImageRoutes(
         try {
             const images = await imageProvider.getImages(searchQuery);
             
-            const authorIds = [...new Set(images.map(img => img.authorId))];
-            
-            const users = await userProvider.getUsersByIds(authorIds);
-            
-            const userMap = new Map(users.map(user => [user.id, user]));
-            
             const apiImages: IApiImageData[] = images.map((image: any) => ({
                 id: image._id.toString(),
                 src: image.src,
                 name: image.name,
-                author: userMap.get(image.author) || { id: image.author, username: "Unknown User" }
+                author: { 
+                    id: image.authorId, 
+                    username: image.authorId,
+                    email: `${image.authorId}@example.com`
+                }
             }));
             
             res.json(apiImages);
@@ -153,8 +147,43 @@ export function registerImageRoutes(
         imageMiddlewareFactory.single("image"),
         handleImageFileErrors,
         async (req: Request, res: Response) => {
-            // Final handler function after the above two middleware functions finish running
-            res.status(500).send("Not implemented");
+            if (!req.file) {
+                res.status(400).send({
+                    error: "Bad Request",
+                    message: "No image file uploaded"
+                });
+                return;
+            }
+            const { name } = req.body;
+            if (!name || typeof name !== 'string') {
+                res.status(400).send({
+                    error: "Bad Request", 
+                    message: "Image name is required"
+                });
+                return;
+            }
+
+            const loggedInUsername = req.user?.username;
+            if (!loggedInUsername) {
+                res.status(401).send({
+                    error: "Unauthorized",
+                    message: "Authentication required"
+                });
+                return;
+            }
+
+            try {
+                const src = `/uploads/${req.file.filename}`;
+                const imageId = await imageProvider.createImage(src, name, loggedInUsername);
+                
+                res.status(201).send();
+            } catch (error) {
+                console.error("Error creating image:", error);
+                res.status(500).send({
+                    error: "Internal Server Error",
+                    message: "Failed to save image"
+                });
+            }
         }
     );
 }

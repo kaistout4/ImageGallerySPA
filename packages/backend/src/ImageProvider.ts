@@ -23,12 +23,6 @@ export class ImageProvider {
         return this.collection.find().toArray();
     }
 
-    searchImagesByName(searchQuery: string) {
-        return this.collection.find({
-            name: { $regex: searchQuery, $options: 'i' }
-        }).toArray();
-    }
-
     getImages(nameFilter?: string) {
         if (nameFilter) {
             return this.collection.find({
@@ -48,5 +42,14 @@ export class ImageProvider {
             { $set: { name: newName } }
         );
         return result.matchedCount;
+    }
+
+    async createImage(src: string, name: string, authorId: string): Promise<ObjectId> {
+        const result = await this.collection.insertOne({
+            src,
+            name,
+            authorId
+        });
+        return result.insertedId;
     }
 }

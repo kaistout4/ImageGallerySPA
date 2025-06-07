@@ -1,5 +1,5 @@
 import React from "react";
-// import { Navigate } from "react-router";
+import { Navigate } from "react-router";
 
 interface IProtectedRouteProps {
     authToken: string | null;
@@ -7,10 +7,9 @@ interface IProtectedRouteProps {
 }
 
 export function ProtectedRoute(props: IProtectedRouteProps) {
-    // Temporarily skip auth check for testing file upload
-    // if (!props.authToken) {
-    //     return <Navigate to="/login" replace />
-    // }
+    if (!props.authToken) {
+        return <Navigate to="/login" replace />
+    }
 
     return props.children;
 }
