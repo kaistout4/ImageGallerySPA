@@ -39,7 +39,11 @@ export function registerAuthRoutes(app: express.Application, credentialsProvider
             const success = await credentialsProvider.registerUser(username, password);
             
             if (success) {
-                res.status(201).send();
+                const jwtSecret = req.app.locals.JWT_SECRET;
+                
+                const token = await generateAuthToken(username, jwtSecret);
+                
+                res.status(201).json({ token });
             } else {
                 res.status(409).send({
                     error: "Conflict",

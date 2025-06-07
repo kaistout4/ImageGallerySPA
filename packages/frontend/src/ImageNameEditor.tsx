@@ -17,20 +17,6 @@ export function ImageNameEditor(props: INameEditorProps) {
         setError(null);
         
         try {
-            const response = await fetch(`/api/images/${props.imageId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: input
-                })
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
             if (props.onUpdateImageName) {
                 await props.onUpdateImageName(props.imageId, input);
             }
