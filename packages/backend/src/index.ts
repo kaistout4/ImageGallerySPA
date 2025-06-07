@@ -40,7 +40,6 @@ mongoClient.connect().then(async () => {
     
     app.use("/api/*", verifyAuthToken);
     registerImageRoutes(app, imageProvider, userProvider);
-    registerAuthRoutes(app, credentialsProvider);
 }).catch(error => {
     console.error("Failed to connect to MongoDB:", error);
 });
