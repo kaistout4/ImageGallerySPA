@@ -91,6 +91,7 @@ function App() {
                 <Route path={ValidRoutes.IMAGE_DETAILS.substring(1)} element={<ImageDetails imageData={imageData} isLoading={isLoading} hasError={hasError} onUpdateImageName={handleUpdateImageName} />} />
                 <Route path={ValidRoutes.UPLOAD.substring(1)} element={<UploadPage />} />
                 <Route path={ValidRoutes.LOGIN.substring(1)} element={<LoginPage />} />
+                <Route path={ValidRoutes.REGISTER.substring(1)} element={<LoginPage isRegistering={true} />} />
             </Route>
         </Routes>
     );
